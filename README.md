@@ -2,192 +2,151 @@
 
 ![GalleryApp Banner](/media/photo_2024-04-21_05-35-08.jpg)
 
-## 🌟 Overview
+## Overview
 
 GalleryApp is a gallery application that allows users to browse, search, and interact with a vast collection of photographs. Built with a tech stack (Golang backend, Angular frontend), GalleryApp delivers a seamless and responsive experience for photography enthusiasts.
 
 **Live Demo:** [http://4.247.165.79](http://4.247.165.79)
 
-**Video Demo:** 
-<video controls width="600">
-  <source src="media/Screencast from 2025-05-05 22-19-11.webm" type="video/webm">
-</video>
-## 📋 Features
+**Video Demo:** [Video](https://youtu.be/C4wKav5CzXY)
 
-- **Intuitive Gallery Interface**: Browse photos with a responsive grid layout
-- **Powerful Search Capabilities**: Search photos by keywords, tags, or visual similarity
-- **Interactive Elements**: Like and comment on favorite photographs
-- **User Authentication**: Secure login and personalized experience
-- **Responsive Design**: Optimal viewing on all device sizes
+## Features
 
-## 🛠️ Technology Stack
+- **Gallery Interface**: Browse photos with a responsive grid layout
+- **Search Capabilities**: Search photos by keywords, tags, or categories
+- **Interactive Elements**: Like, Rate and comment on favorite photographs
+- **User Authentication**: Secure login and registration
+- **Design**: Optimal viewing on all device sizes
+
+## Technology Stack
 
 ### Backend
-- **Golang**: High-performance, concurrent server-side language
-- **Postgres**: Robust relational database for structured data storage
+- **Golang**: High-performance, concurrent tasks with goroutines and user friendly
+- **Postgres**: The best relational database for my opinion, because of robust queries and for structured data storage
 - **RESTful API**: Clean architecture for client-server communication
 
 ### Frontend
-- **Angular**: Component-based framework for building dynamic SPA
-- **TypeScript**: Type-safe programming for improved code quality
-- **SCSS**: Advanced styling with better organization capabilities
+- **Angular**: Component based framework for building dynamic SPA and easiness for multi-platform usability ( you can test my application from tablet or even phone)
+- **SCSS**: Simple and understandable styling tool
 
 ### Deployment
 - **NGINX**: High-performance web server and reverse proxy
 - **Azure**: Cloud hosting platform for reliable deployment
 - **Docker**: Containerization for consistent deployment environments
 
-## 🚀 Installation and Setup
+## Installation and Setup
 
 ### Prerequisites
-- Go 1.18+
-- Node.js 16+
-- Angular CLI 14+
-- PostgreSQL 14+
 - Docker & Docker Compose (optional)
+- make sure that port :80 is free
 
-### Backend Setup
-
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/photovista.git
-cd photovista/backend
-
-# Install dependencies
-go mod download
-
-# Configure database connection in .env file
-cp .env.example .env
-# Edit .env with your database credentials
-
-# Run migrations
-go run cmd/migrate/main.go
-
-# Start the backend server
-go run cmd/api/main.go
-```
-
-### Frontend Setup
+### Setup
 
 ```bash
-# Navigate to frontend directory
-cd ../frontend
-
-# Install dependencies
-npm install
-
-# Start development server
-ng serve
-
-# Application will be available at http://localhost:4200
+git clone https://github.com/bekonRymkhanov/Gallery.git
+cd Gallery
 ```
-
-### Using Docker (Optional)
-
+### Environment
+ make ``.env`` file and fill it with your data
 ```bash
-# From project root
-docker-compose up -d
+touch .env
+nano .env
+```
+```env
+POSTGRES_USER=user
+POSTGRES_PASSWORD=password
+POSTGRES_DB=isomething
+POSTGRES_URL=postgres://user:password@postgres:5432/isomthing?sslmode=disable
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+
+NODE_ENV=development
+PORT=8080
 ```
 
-## 💭 Design Process & Development Journey
+
+### Start
+```bash
+docker compose up -d
+```
+
+## Process
 
 ### Planning Phase
-The development of PhotoVista began with a comprehensive planning phase where I mapped out the core functionalities and user experience. I created wireframes and mockups to visualize the user interface and established a clear architecture for both frontend and backend components.
+The development of GalleryApp began with a planning phase where I mapped out the core functionalities and user experience. I established a clear architecture for both frontend and backend components. With postman testing app I predefined all API witch my system would have in the future
 
 ### Technology Choices
-I selected Golang for the backend due to its performance characteristics, strong concurrency model, and excellent support for building RESTful services. For the frontend, Angular was chosen for its robust framework features, TypeScript integration, and component-based architecture which allows for clean code organization and reusability.
+I selected Golang for the backend due to its performance characteristics, strong concurrency model, and excellent support for building RESTful services. For the frontend, Angular has been chosen for its battaries-included framework features, TypeScript integration, and component-based architecture which allows for clean code organization and reusability.
+`In the future ts will be compiled in Golang language witch will increase its speed for nearly 10x`
 
-The decision to use PostgreSQL was driven by the need for a reliable relational database with strong JSON support, which is ideal for storing varied metadata associated with photographs.
 
-### Development Approach
+The decision to use PostgreSQL was driven by the need for a reliable relational database with strong JSON support, which is ideal for storing varied metadata associated with photos.
+
+### My Development Approach
 I followed an iterative development process:
 1. Built the core API endpoints and database schema
 2. Implemented basic authentication and user management
 3. Developed the gallery browsing experience
 4. Added search functionality with both text and image-based queries
-5. Implemented social features (likes, comments)
-6. Performed optimization and refinement
+5. Implemented social features (likes, comments, ratings)
+6. Though that adding ai agents and AI generative image needs more time on testing and preparing api's, Maybe, even requiring my oun trained model
+7. I could've use open resoure api's for for photo retrival, but it will make any extentions to the code harder in the future and CRUD operations becomes impossible, so I decided to use my own photo CRUD.
 
-Throughout the process, I maintained a focus on code quality, with comprehensive tests and documentation to ensure maintainability.
-
-## 🧠 Unique Approaches & Methodologies
-
-### Image Similarity Search
-One of the most distinctive features of PhotoVista is its image similarity search. Rather than relying solely on metadata or tags, the application employs computer vision techniques to identify visually similar photographs. This was implemented using a combination of:
-
-- Feature extraction using convolutional neural networks
-- Vector embedding storage in PostgreSQL with the pgvector extension
-- Optimized nearest-neighbor search algorithms
-
-### Adaptive Image Loading
-To improve performance and user experience, I implemented an adaptive image loading system that:
-
-- Serves appropriately sized images based on device capabilities
-- Implements progressive loading with blurred placeholders
-- Utilizes intelligent caching strategies to reduce bandwidth usage
-
-### Modular Architecture
-The backend implements a clean, hexagonal architecture that separates business logic from external concerns, making the system highly testable and maintainable.
-
-## ⚖️ Technical Trade-offs
+## Technical trade-offs
 
 ### SQL vs NoSQL Database
-While NoSQL solutions like MongoDB might offer more flexibility for document storage, I chose PostgreSQL for its:
-- ACID compliance and data integrity guarantees
-- Strong JSON support that still allows for schema flexibility when needed
+even if noSQL solutions like MongoDB might offer more flexibility, I chose PostgreSQL for its:
+- ACID and data integrity guarantees
+- Strong JSON support
 - Better support for complex queries and relationships
 - Integration with full-text search capabilities
 
-The trade-off is slightly more rigid schema design, but the benefits in data consistency and query performance were worth it for this application.
+The benefits in data consistency and query performance were worth it for this application.
 
 ### Monolith vs Microservices
-I opted for a monolithic architecture initially rather than microservices because:
+I choose a monolithic architecture rather than microservices because:
 - It simplified the development process for a solo developer
-- Reduced operational complexity during the initial launch
+- Reduced operational complexity during the initial launch`I had an only 2 days, witch is dealbreaker`
 - Provided a solid foundation that can be broken into microservices later if needed
 
-The application is designed with clean separation of concerns, making future transition to microservices possible if scaling requires it.
+The application is designed of concerns, making future transition to microservices possible if scaling requires it.
 
 ### Angular vs React
 Angular was selected over React despite React's larger community because:
-- Angular's opinionated structure enforced consistency across the codebase
+- Opinionated, batteries-included
 - TypeScript integration was seamless
-- The comprehensive ecosystem (routing, forms, HTTP client) reduced the need for third-party libraries
+- The very easy to understand ecosystem (routing, forms, HTTP client) reduced the need for third-party libraries
 
-The trade-off is a steeper learning curve and slightly more boilerplate code, but the benefits in terms of maintainability and structure were valuable for this project.
+The bad side is a steeper learning curve and slightly more boilerplate code, but the benefits in terms of maintainability and structure were valuable for this project.
 
-## 🐛 Known Issues & Limitations
+## Known issues & limitations
 
 ### Current Limitations
-- **Mobile image upload**: The image upload feature may have inconsistent behavior on some mobile browsers
 - **Search performance**: Very large image searches may experience latency on the free tier of Azure hosting
 - **Browser compatibility**: Some advanced visual effects may not appear correctly in older browsers
 
-### Future Improvements
-- Implement WebSocket for real-time comment notifications
-- Add user galleries and collections functionality
+### Future improvements
+- Implement Websocket for real time comment notifications
+- Implement redis cashing
 - Integrate with social media platforms for easy sharing
-- Implement AI-powered automatic tagging of uploaded images
-- Add support for video content
+- Implement AI-powered services
 
-## 📊 Performance Considerations
+## Performance considerations
 
-PhotoVista was optimized for performance in several ways:
-- Backend API response times kept under 100ms for most operations
-- Frontend bundle size minimized through lazy loading and code splitting
-- Image assets optimized and served through CDN
+GalleryApp was optimized for performance in several ways:
+- Backend API response times kept under 100ms for most operations, only photos list can exit it
+- Frontend bundle size minimized through lazy loading and code splitting, and used html cashing for faster load of pages
 - Database queries optimized with appropriate indexes
 
-## 👥 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+This project is designed and coded only to make nFactorial technical task.
 
-## 🙏 Acknowledgements
 
-- [Unsplash](https://unsplash.com/) for the free high-quality images used in development
+## Acknowledgements
+
 - The Go and Angular communities for their excellent documentation and support
+- AI agents for their halp with problem solving tasks
 - [Azure](https://azure.microsoft.com/) for cloud hosting services
