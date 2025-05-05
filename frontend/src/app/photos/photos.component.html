@@ -1,0 +1,74 @@
+<div class="photo-gallery-container">
+    <div class="search-section">
+      <h2>Photo Gallery</h2>
+      <form (ngSubmit)="onSearch()" class="search-form">
+        <div class="form-group">
+          <input type="text" [(ngModel)]="filters.title" name="title" placeholder="Search by title" class="form-control">
+        </div>
+        <div class="form-group">
+          <input type="text" [(ngModel)]="filters.author" name="author" placeholder="Search by author" class="form-control">
+        </div>
+        <div class="form-group">
+          <input type="text" [(ngModel)]="filters.category" name="category" placeholder="Category" class="form-control">
+        </div>
+        <div class="form-group">
+          <input type="text" [(ngModel)]="filters.tags" name="tags" placeholder="Tags" class="form-control">
+        </div>
+        <div class="button-group">
+          <button type="submit" class="btn btn-primary">Search</button>
+          <button type="button" (click)="onClear()" class="btn btn-secondary">Clear</button>
+        </div>
+      </form>
+    </div>
+  
+    <!-- Loading indicator -->
+    <div *ngIf="!loaded" class="loading-container">
+      <div class="spinner"></div>
+      <p>Loading photos...</p>
+    </div>
+  
+    <!-- No photos found message -->
+    <div *ngIf="loaded && photos.length === 0" class="no-results">
+      <p>No photos found matching your criteria. Try adjusting your search.</p>
+    </div>
+  
+    <!-- Photo grid -->
+    <div *ngIf="loaded && photos.length > 0" class="photos-content">
+      <div class="pagination-controls">
+        <button [disabled]="metadata.CurrentPage <= 1" (click)="PreviousPage()" class="btn btn-nav">
+          &laquo; Previous
+        </button>
+        <span class="page-info">Page {{metadata.CurrentPage}} of {{metadata.LastPage}}</span>
+        <button [disabled]="metadata.CurrentPage >= metadata.LastPage" (click)="NextPage()" class="btn btn-nav">
+          Next &raquo;
+        </button>
+      </div>
+  
+      <div class="photo-grid">
+        <div *ngFor="let photo of photos" class="photo-card">
+          <a [routerLink]="['/photos', photo.id]" class="photo-link">
+            <div class="photo-thumbnail">
+              <img [src]="photo.thumbnail_url || 'assets/placeholder-image.jpg'" 
+                   [alt]="photo.title" 
+                   class="thumbnail-img">
+            </div>
+            <div class="photo-info">
+              <h3 class="photo-title">{{photo.title}}</h3>
+              <p class="photo-author">by {{photo.author}}</p>
+              <div *ngIf="photo.category" class="photo-category">
+                <span class="category-label">{{photo.category}}</span>
+              </div>
+              <div class="photo-stats">
+                <span class="likes">❤️ {{photo.likes}}</span>
+                <span class="downloads">⬇️ {{photo.download_count}}</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+  
+      <div class="pagination-info">
+        <p>Showing {{photos.length}} of {{metadata.TotalRecords}} photos</p>
+      </div>
+    </div>
+  </div>

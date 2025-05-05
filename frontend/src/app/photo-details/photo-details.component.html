@@ -1,0 +1,144 @@
+<div class="photo-details-container">
+  <div class="back-button-container">
+    <a [routerLink]="['/photos']" class="back-button">
+      &laquo; Back to Gallery
+    </a>
+  </div>
+
+ 
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading photo details...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="successMessage" class="success-message">
+    {{ successMessage }}
+  </div>
+
+  <div *ngIf="!isLoading && photo" class="photo-content">
+    <div class="photo-main">
+      <h1 class="photo-title">{{ photo.title }}</h1>
+      
+      <div class="photo-image-container">
+        <img [src]="photo.url" [alt]="photo.title" class="photo-image">
+      </div>
+
+      <div class="photo-actions">
+        <div class="like-section">
+          <button [class.liked]="isLiked" (click)="toggleLike()" [disabled]="!isAuthenticated" class="like-button">
+            <span class="heart-icon">{{ isLiked ? '❤️' : '🤍' }}</span>
+            <span class="like-count">{{ photo.likes }}</span>
+          </button>
+        </div>
+
+        <div class="rating-section">
+          <div class="rating-display">
+            <span class="avg-rating">{{ averageRating | number: '1.1-1' }}</span>
+            <div class="star-display">
+              <span *ngFor="let star of [1,2,3,4,5]" class="star">
+                {{ averageRating >= star ? '★' : '☆' }}
+              </span>
+            </div>
+            <span class="total-ratings">({{ totalRatings }} ratings)</span>
+          </div>
+          
+          <div *ngIf="isAuthenticated" class="user-rating">
+            <p class="rate-prompt">Rate this photo:</p>
+            <div class="star-rating">
+              <span *ngFor="let star of [1,2,3,4,5]" 
+                    (click)="ratePhoto(star)" 
+                    [ngClass]="{'active': star <= currentUserRating, 'inactive': star > currentUserRating}"
+                    class="rate-star">
+                {{ star <= currentUserRating ? '★' : '☆' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="photo-metadata">
+        <div class="metadata-item">
+          <span class="metadata-label">Photographer:</span>
+          <span class="metadata-value">{{ photo.author }}</span>
+        </div>
+        <div *ngIf="photo.category" class="metadata-item">
+          <span class="metadata-label">Category:</span>
+          <span class="metadata-value">
+            <span class="category-tag">{{ photo.category }}</span>
+          </span>
+        </div>
+        <div *ngIf="photo.tags" class="metadata-item">
+          <span class="metadata-label">Tags:</span>
+          <span class="metadata-value">
+            <span *ngFor="let tag of photo.tags.split(',')" class="tag">{{ tag.trim() }}</span>
+          </span>
+        </div>
+        <div class="metadata-item">
+          <span class="metadata-label">Resolution:</span>
+          <span class="metadata-value">{{ photo.width }} × {{ photo.height }}</span>
+        </div>
+        <div class="metadata-item">
+          <span class="metadata-label">Downloads:</span>
+          <span class="metadata-value">{{ photo.download_count }}</span>
+        </div>
+      </div>
+
+      <div *ngIf="photo.description" class="photo-description">
+        <h3>Description</h3>
+        <p>{{ photo.description }}</p>
+      </div>
+    </div>
+
+    <div class="comments-section">
+      <h2>Comments ({{ comments.length }})</h2>
+      
+      <div *ngIf="isAuthenticated" class="comment-form-container">
+        <form [formGroup]="commentForm" (ngSubmit)="submitComment()" class="comment-form">
+          <div class="form-group">
+            <textarea 
+              formControlName="content" 
+              placeholder="Leave a comment..." 
+              rows="3"
+              class="comment-textarea"
+            ></textarea>
+            <div *ngIf="commentForm.get('content')?.invalid && commentForm.get('content')?.touched" class="validation-error">
+              Comment must be at least 2 characters long.
+            </div>
+          </div>
+          <button type="submit" [disabled]="commentForm.invalid" class="submit-comment-btn">
+            Post Comment
+          </button>
+        </form>
+      </div>
+
+      <div *ngIf="!isAuthenticated" class="login-prompt">
+        <p>Please log in to post comments and ratings.</p>
+      </div>
+
+      <div class="comments-list">
+        <div *ngIf="comments.length === 0" class="no-comments">
+          <p>No comments yet. Be the first to comment!</p>
+        </div>
+
+        <div *ngFor="let comment of comments" class="comment-item">
+          <div class="comment-header">
+            <span class="comment-user">User #{{ comment.user_id }}</span>
+            <span class="comment-date">{{ formatDate(comment.created_at) }}</span>
+          </div>
+          <div class="comment-content">
+            {{ comment.content }}
+          </div>
+          <div *ngIf="isAuthenticated" class="comment-actions">
+            <button *ngIf="comment.user_id === 0" (click)="deleteComment(comment.id)" class="delete-comment-btn">
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

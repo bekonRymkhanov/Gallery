@@ -147,43 +147,56 @@ func (l LikeModel) GetLikesByPhotoID(photoID int64) ([]*domain.Like, error) {
 	return likes, nil
 }
 
-func (l LikeModel) GetLikesByUserID(userID int64) ([]*domain.Like, error) {
+func (p PhotoModel) GetPhotosLikedByUser(userID int64) ([]*domain.Photo, error) {
 	query := `
-		SELECT id, user_id, photo_id, created_at, version
-		FROM likes
-		WHERE user_id = $1
-		ORDER BY created_at DESC
+		SELECT 
+			p.id, p.title, p.description, p.author, p.category, p.tags,
+			p.width, p.height, p.url, p.thumbnail_url, p.source,
+			p.download_count, p.likes, p.version
+		FROM photos p
+		INNER JOIN likes l ON p.id = l.photo_id
+		WHERE l.user_id = $1
+		ORDER BY l.created_at DESC
 	`
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	rows, err := l.DB.QueryContext(ctx, query, userID)
+	rows, err := p.DB.QueryContext(ctx, query, userID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var likes []*domain.Like
+	var photos []*domain.Photo
 
 	for rows.Next() {
-		var like domain.Like
+		var photo domain.Photo
 		err := rows.Scan(
-			&like.ID,
-			&like.UserID,
-			&like.PhotoID,
-			&like.CreatedAt,
-			&like.Version,
+			&photo.ID,
+			&photo.Title,
+			&photo.Description,
+			&photo.Author,
+			&photo.Category,
+			&photo.Tags,
+			&photo.Width,
+			&photo.Height,
+			&photo.URL,
+			&photo.ThumbnailURL,
+			&photo.Source,
+			&photo.DownloadCount,
+			&photo.Likes,
+			&photo.Version,
 		)
 		if err != nil {
 			return nil, err
 		}
-		likes = append(likes, &like)
+		photos = append(photos, &photo)
 	}
 
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
 
-	return likes, nil
+	return photos, nil
 }

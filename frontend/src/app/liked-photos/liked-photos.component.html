@@ -1,0 +1,53 @@
+<div class="liked-photos-container">
+    <h2>Your Liked Photos</h2>
+    
+    <!-- Loading indicator -->
+    <div *ngIf="!loaded" class="loading-container">
+      <div class="spinner"></div>
+      <p>Loading your liked photos...</p>
+    </div>
+    
+    <!-- Error message -->
+    <div *ngIf="error" class="error-message">
+      <p>{{ error }}</p>
+      <button class="btn btn-primary" (click)="loadLikedPhotos()">Try Again</button>
+    </div>
+    
+    <!-- No liked photos message -->
+    <div *ngIf="loaded && likedPhotos.length === 0 && !error" class="no-results">
+      <p>You haven't liked any photos yet. Explore the gallery to find photos you love!</p>
+      <a routerLink="/photos" class="btn btn-primary">Browse Gallery</a>
+    </div>
+    
+    <!-- Liked photos grid -->
+    <div *ngIf="loaded && likedPhotos.length > 0" class="photos-content">
+      <div class="photo-grid">
+        <div *ngFor="let photo of likedPhotos" class="photo-card">
+          <div class="photo-actions">
+            <button class="unlike-btn" (click)="unlikePhoto(photo.id)" title="Unlike this photo">
+              ❌
+            </button>
+          </div>
+          
+          <a [routerLink]="['/photos', photo.id]" class="photo-link">
+            <div class="photo-thumbnail">
+              <img [src]="photo.thumbnail_url || 'assets/placeholder-image.jpg'" 
+                   [alt]="photo.title" 
+                   class="thumbnail-img">
+            </div>
+            <div class="photo-info">
+              <h3 class="photo-title">{{photo.title}}</h3>
+              <p class="photo-author">by {{photo.author}}</p>
+              <div *ngIf="photo.category" class="photo-category">
+                <span class="category-label">{{photo.category}}</span>
+              </div>
+              <div class="photo-stats">
+                <span class="likes">❤️ {{photo.likes}}</span>
+                <span class="downloads">⬇️ {{photo.download_count}}</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>

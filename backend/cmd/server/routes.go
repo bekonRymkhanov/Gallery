@@ -37,7 +37,7 @@ func (app *application) routes() http.Handler {
 	// Like routes
 	router.HandlerFunc(http.MethodPost, "/photos/:id/likes", app.requireAuthenticatedUser(app.likePhotoHandler))
 	router.HandlerFunc(http.MethodDelete, "/photos/:id/likes", app.requireAuthenticatedUser(app.unlikePhotoHandler))
-	router.HandlerFunc(http.MethodGet, "/users/likes", app.listLikesByUserHandler)
+	router.HandlerFunc(http.MethodGet, "/users/likes", app.listLikedPhotosByUserHandler)
 	router.HandlerFunc(http.MethodGet, "/photos/:id/likes/check", app.requireAuthenticatedUser(app.checkLikeHandler))
 
 	// User routes

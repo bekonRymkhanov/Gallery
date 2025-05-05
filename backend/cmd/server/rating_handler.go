@@ -60,9 +60,27 @@ func (app *application) createRatingHandler(w http.ResponseWriter, r *http.Reque
 	}
 
 	if existingRating != nil {
-		app.failedValidationResponse(w, r, map[string]string{
-			"rating": "you have already rated this photo",
-		})
+		if existingRating.UserID != user.ID {
+			app.notPermittedResponse(w, r)
+			return
+		}
+		existingRating.Score = rating.Score
+
+		err = app.models.Rating.Update(existingRating)
+		if err != nil {
+			switch {
+			case errors.Is(err, data.ErrEditConflict):
+				app.editConflictResponse(w, r)
+			default:
+				app.serverErrorResponse(w, r, err)
+			}
+			return
+		}
+
+		err = app.writeJSON(w, http.StatusOK, envelope{"rating": rating}, nil)
+		if err != nil {
+			app.serverErrorResponse(w, r, err)
+		}
 		return
 	}
 

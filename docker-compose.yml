@@ -1,4 +1,32 @@
+version: '3.8'
+
 services:
+  frontend:
+    container_name: frontend
+    build: ./frontend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "4200:4200"
+    depends_on:
+      - backend
+    networks:
+      - fullstack
+    restart: always
+
+  nginx:
+    container_name: nginx
+    build: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - fullstack
+    restart: always
+
   backend:
     container_name: backend
     build: ./backend

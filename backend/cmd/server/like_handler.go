@@ -118,19 +118,20 @@ func (app *application) unlikePhotoHandler(w http.ResponseWriter, r *http.Reques
 	}
 }
 
-func (app *application) listLikesByUserHandler(w http.ResponseWriter, r *http.Request) {
+func (app *application) listLikedPhotosByUserHandler(w http.ResponseWriter, r *http.Request) {
 	user := app.contextGetUser(r)
 	if user.IsAnonymous() {
 		app.authenticationRequiredResponse(w, r)
 		return
 	}
-	likes, err := app.models.Like.GetLikesByUserID(user.ID)
+
+	photos, err := app.models.Photo.GetPhotosLikedByUser(user.ID)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 		return
 	}
 
-	err = app.writeJSON(w, http.StatusOK, envelope{"likes": likes}, nil)
+	err = app.writeJSON(w, http.StatusOK, envelope{"photos": photos}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
