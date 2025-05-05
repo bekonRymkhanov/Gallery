@@ -7,7 +7,7 @@ import { Observable } from 'rxjs/internal/Observable';
   providedIn: 'root'
 })
 export class GalleryService {
-  BACKEND_URL='http://localhost:8080';
+  BACKEND_URL='http://4.247.165.79:8080';
 
   constructor(private client:HttpClient) { }
 
